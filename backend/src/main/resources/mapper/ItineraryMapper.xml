@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.travelassistant.mapper.ItineraryMapper">
+
+    <resultMap id="ItineraryDetailResponseMap" type="com.example.travelassistant.dto.ItineraryDetailResponse">
+        <id property="id" column="itinerary_id"/>
+        <result property="title" column="title"/>
+        <result property="city" column="city"/>
+        <result property="totalDays" column="total_days"/>
+        <collection property="dailySchedules" ofType="com.example.travelassistant.dto.ItineraryDetailResponse$DailyScheduleVO">
+            <id property="dayNumber" column="day_number"/>
+            <result property="routeSummary" column="route_summary"/>
+            <result property="routeDistance" column="route_distance"/>
+            <result property="routeDuration" column="route_duration"/>
+            <collection property="attractions" ofType="com.example.travelassistant.dto.ItineraryDetailResponse$AttractionVO">
+                <id property="detailId" column="detail_id"/>
+                <result property="attractionId" column="attraction_id"/>
+                <result property="name" column="name"/>
+                <result property="description" column="description"/>
+                <result property="suggestedHours" column="suggested_hours"/>
+                <result property="sortOrder" column="sort_order"/>
+                <result property="longitude" column="longitude"/>
+                <result property="latitude" column="latitude"/>
+                <result property="imageUrl" column="image_url"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectItineraryDetail" resultMap="ItineraryDetailResponseMap">
+        SELECT
+            i.id AS itinerary_id,
+            i.title,
+            i.city,
+            COALESCE(MAX(dp.day_number) OVER (PARTITION BY i.id), 0) AS total_days,
+            d.day_number,
+            d.id AS detail_id,
+            d.attraction_id,
+            d.sort_order,
+            dp.route_summary,
+            dp.route_distance,
+            dp.route_duration,
+            a.name,
+            a.description,
+            a.play_time AS suggested_hours,
+            a.longitude,
+            a.latitude,
+            a.image_url
+        FROM itinerary i
+        LEFT JOIN itinerary_detail d ON i.id = d.itinerary_id
+        LEFT JOIN itinerary_day_plan dp ON i.id = dp.itinerary_id AND d.day_number = dp.day_number
+        LEFT JOIN attraction a ON d.attraction_id = a.id
+        WHERE i.id = #{id}
+        ORDER BY d.day_number, d.sort_order
+    </select>
+</mapper>

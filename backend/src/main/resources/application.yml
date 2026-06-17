@@ -1,0 +1,36 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: travel-assistant
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:travel_assistant}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.example.travelassistant.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  ai:
+    enabled: ${AI_ENABLED:false}
+    base-url: ${AI_BASE_URL:https://api.deepseek.com}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:deepseek-chat}
+  amap:
+    web-service-key: ${AMAP_WEB_SERVICE_KEY:}

@@ -1,0 +1,38 @@
+# Runtime secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Java / Spring Boot
+target/
+*.jar
+*.war
+*.ear
+
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+
+# Logs and local runtime output
+logs/
+*.log
+*.err
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE and OS files
+**/.vscode/launch.json
+**/.vscode/settings.json
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
